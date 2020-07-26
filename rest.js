@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
-const lookup = require('./lookup');
+const { lookup, troubleshoot } = require('./lookup');
 const port = process.env.PORT || 5000;
 
 app.use(cors());
@@ -27,10 +27,11 @@ class Queue {
                 }));
             } else {
                 task.res.send(JSON.stringify(
-                    await lookup(domain, extensions)
+                    await lookup(domain, extensions, true)
                 ));
             }
         }
+        await troubleshoot();
     }
 }
 

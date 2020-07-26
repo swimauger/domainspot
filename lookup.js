@@ -1,4 +1,6 @@
 const puppeteer = require('puppeteer');
+let browser = null;
+let page = null;
 
 function website(domain, extensions) {
     const url = `https://domains.google.com/m/registrar/search?searchTerm=${domain}`;
@@ -12,6 +14,7 @@ function website(domain, extensions) {
  * Lookup a domains name, price, and availability
  * @param {string} domain - The name of the domain you are searching for.
  * @param {string[]} extensions - Extensions you would like to include in search. If none are specified, every extension will be used.
+ * @param {string} manual - Optional parameter for manually opening and closing browser used to scrape domains. (Default: false)
  * @example
  * await lookup('thisisaverylongtest', ['com'])
  * // Will return
@@ -22,9 +25,12 @@ function website(domain, extensions) {
  * }
  * @returns {Promise<Object>} Returns a promise, resolving in an object with each domain mapped by name (key) to price (value)
  */
-async function lookup(domain, extensions) {
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-    const page = await browser.newPage();
+async function lookup(domain, extensions, manual=false) {
+    if (!browser) {
+        browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+        page = await browser.newPage();
+    }
+    
     await page.goto(website(domain, extensions));
     await page.waitForSelector('search-result-card-header');
     const domains = await page.$$eval('search-result-card-header', (domainCards) => {
@@ -35,8 +41,17 @@ async function lookup(domain, extensions) {
             };
         });
     });
-    await browser.close();
+
+    if (!manual) {
+        await troubleshoot();
+    }
+    
     return domains;
 }
 
-module.exports = lookup;
+async function troubleshoot() {
+    await browser.close();
+    browser = null;
+}
+
+module.exports = { lookup, troubleshoot };

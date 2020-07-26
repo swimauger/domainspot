@@ -21,6 +21,7 @@ Main function for searching domains
 | :--------: | :------: | :--------------------------------------------------------------------------------------------------- | :------: |
 | domain     | String   | The name of the domain you are searching for.                                                        | True     |
 | extensions | String[] | Extensions you would like to include in search. If none are specified, every extension will be used. | False    |
+| manual     | Boolean  | Optional parameter for manually opening and closing browser used to scrape domains. (Default: false) | False    |
 
 ## Contributions
 <a href="https://github.com/swimauger/image-classifier/graphs/contributors">
