@@ -1,1 +1,1 @@
-web: node rest
+web: npm run rest
