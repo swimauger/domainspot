@@ -23,7 +23,7 @@ function website(domain, extensions) {
  * @returns {Promise<Object>} Returns a promise, resolving in an object with each domain mapped by name (key) to price (value)
  */
 async function lookup(domain, extensions) {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
     const page = await browser.newPage();
     await page.goto(website(domain, extensions));
     await page.waitForSelector('search-result-card-header');
