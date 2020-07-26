@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 
 const { lookup, troubleshoot } = require('./lookup');
+const validExtensions = require('./extensions.json');
 const port = process.env.PORT || 5000;
 
 app.use(cors());
@@ -20,15 +21,20 @@ class Queue {
 
     static async scrape() {
         for (const task of this.tasks) {
-            const { domain, extensions } = task.req.body;
+            let { domain, extensions } = task.req.body;
+            extensions = extensions.filter(ext => !!validExtensions[ext.toUpperCase()])
             if (!domain) {
                 task.res.send(JSON.stringify({
                     error: "No Domain Specified"
                 }));
-            } else {
+            } else if (extensions.length) {
                 task.res.send(JSON.stringify(
                     await lookup(domain, extensions, true)
                 ));
+            } else {
+                task.res.send(JSON.stringify({
+                    error: "No Valid Extensions Found"
+                }));
             }
         }
         this.tasks = [];
