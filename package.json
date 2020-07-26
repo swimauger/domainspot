@@ -1,0 +1,33 @@
+{
+  "name": "domainspot",
+  "version": "1.0.0",
+  "description": "Lookup domain availablility, price, etc",
+  "main": "lookup.js",
+  "scripts": {
+    "rest": "node rest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/swimauger/domainspot.git"
+  },
+  "keywords": [
+    "Domain",
+    "Name",
+    "Availability",
+    "Price",
+    "Lookup"
+  ],
+  "author": "Mark Auger",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/swimauger/domainspot/issues"
+  },
+  "homepage": "https://github.com/swimauger/domainspot#readme",
+  "dependencies": {
+    "jsdom": "^16.3.0",
+    "puppeteer": "^5.2.1"
+  },
+  "devDependencies": {
+    "express": "^4.17.1"
+  }
+}
