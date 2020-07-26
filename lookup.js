@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 let browser = null;
 let page = null;
+let domains = [];
 
 function website(domain, extensions) {
     const url = `https://domains.google.com/m/registrar/search?searchTerm=${domain}`;
@@ -26,21 +27,26 @@ function website(domain, extensions) {
  * @returns {Promise<Object>} Returns a promise, resolving in an object with each domain mapped by name (key) to price (value)
  */
 async function lookup(domain, extensions, manual=false) {
+    
+    const site = website(domain, extensions);
+    
     if (!browser) {
         browser = await puppeteer.launch({ args: ['--no-sandbox'] });
         page = await browser.newPage();
     }
     
-    await page.goto(website(domain, extensions));
-    await page.waitForSelector('search-result-card-header');
-    const domains = await page.$$eval('search-result-card-header', (domainCards) => {
-        return Array.from(domainCards).map(domainCard => {
-            return {
-                domain: domainCard.querySelector('span.domain-name').textContent.trim(),
-                price: domainCard.querySelector('span.ng-star-inserted:not(.check_circle_filled)').textContent.trim()
-            };
+    if (site !== page.url()) {
+        await page.goto(site);
+        await page.waitForSelector('search-result-card-header');
+        domains = await page.$$eval('search-result-card-header', (domainCards) => {
+            return Array.from(domainCards).map(domainCard => {
+                return {
+                    domain: domainCard.querySelector('span.domain-name').textContent.trim(),
+                    price: domainCard.querySelector('span.ng-star-inserted:not(.check_circle_filled)').textContent.trim()
+                };
+            });
         });
-    });
+    }
 
     if (!manual) {
         await troubleshoot();

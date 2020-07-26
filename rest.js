@@ -31,7 +31,6 @@ class Queue {
                 ));
             }
         }
-        await troubleshoot();
     }
 }
 
@@ -39,4 +38,8 @@ app.post('/', Queue.add.bind(Queue));
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
+});
+
+process.on('beforeExit', async () => {
+    await troubleshoot();
 });
