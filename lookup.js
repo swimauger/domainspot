@@ -58,7 +58,7 @@ async function lookup(domain, extensions, manual=false) {
     } catch (error) {
         console.error(error);
         await troubleshoot();
-        await lookup(domain, extensions, manual);
+        return await lookup(domain, extensions, manual);
     }
 }
 
